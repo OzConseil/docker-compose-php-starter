@@ -1,0 +1,47 @@
+version: '2'
+
+services:
+  data:
+    image: debian:jessie
+    user: www-data
+    volumes:
+      - '.:/var/www/'
+
+  cli:
+    image: ozconseil/php:5.6-cli
+    links:
+      - db
+    user: www-data
+    working_dir: /var/www
+    volumes_from:
+      - data
+
+  composer:
+    image: ozconseil/php:5.6-cli
+    links:
+      - db
+    user: www-data
+    working_dir: /var/www
+    entrypoint: 'php composer.phar'
+    volumes_from:
+      - data
+
+  web:
+    image: ozconseil/php:5.6-apache
+    links:
+      - db
+    ports:
+      - '8080:80'
+    volumes_from:
+      - data
+
+  db:
+    image: mariadb:5.5
+    volumes:
+      - './data/sql:/docker-entrypoint-initdb.d'
+      - './data/db:/var/lib/mysql'
+    environment:
+     MYSQL_ROOT_PASSWORD: root
+     MYSQL_DATABASE: database
+     MYSQL_USER: dbuser
+     MYSQL_PASSWORD: dbpassword
