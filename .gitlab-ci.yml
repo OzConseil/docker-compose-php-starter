@@ -1,0 +1,4 @@
+mirror_github:
+  stage: deploy
+  script:
+    - git push --mirror https://GITHUB_USERNAME:GITHUB_PASSWORD@github.com/OzConseil/docker-compose-php-starter.git
